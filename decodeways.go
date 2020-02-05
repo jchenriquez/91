@@ -5,55 +5,70 @@ import (
 	"strconv"
 )
 
+func toKey(arr []byte) (key string) {
+
+	for _, byt := range arr {
+		key = fmt.Sprintf("%s%c", key, byt+'a')
+	}
+
+	return
+}
+
+func decoder(s []byte, memo map[string]int) int {
+
+	fmt.Printf("s %v\n", s)
+	key := toKey(s)
+
+	if _, saw := memo[key]; saw {
+		return 0
+	}
+
+	var count int
+
+	for i := 0; i < len(s)-1; i++ {
+		inDigit := s[i] - '0'
+
+		if inDigit == 0 && i == 0 {
+			return 0
+		}
+
+		nDigit := s[i+1] - '0'
+
+		fmted := fmt.Sprintf("%d%d", inDigit, nDigit)
+		toDigit, _ := strconv.Atoi(fmted)
+
+		switch {
+		case toDigit <= 26:
+			nArray := make([]byte, 0, len(s)-1)
+			nArray = append(nArray, s[:i]...)
+			nArray = append(nArray, byte(toDigit))
+			count += decoder(append(nArray, s[i+2:]...), memo) + 1
+		case toDigit > 26 && inDigit == 0:
+			return 0
+		}
+	}
+
+	memo[key] = count
+
+	return count
+
+}
+
 // NumDecodings will return the amount of ways s can be decoded.
 func NumDecodings(s string) (ret int) {
 	if len(s) == 0 {
 		return 0
 	}
 
-	numWays := make([][]byte, 0, len(s))
+	count := 1
 
-	for i := 0; i < len(s); i++ {
-		inDigit := s[i] - '0'
+	sbyt := []byte(s)
 
-		if len(numWays) == 0 {
-			if inDigit == 0 {
-				return 0
-			}
-			numWays = append(numWays, []byte{s[i] - '0'})
-		} else {
-			tmpNumWays := make([][]byte, 0, len(numWays)+1)
-			for _, bytArr := range numWays {
-				comb := fmt.Sprintf("%d%d", bytArr[len(bytArr)-1], inDigit)
-				fmt.Printf("comb %s\n", comb)
-				combInt, _ := strconv.Atoi(comb)
-				fmt.Printf("inDigit1 %d\n", inDigit)
-				fmt.Printf("combInt %d\n", combInt)
-
-				if combInt <= 26 {
-					bytArrCpy := make([]byte, len(bytArr))
-					copy(bytArrCpy, bytArr[:len(bytArr)-1])
-					bytArrCpy = append(bytArrCpy, byte(combInt))
-					tmpNumWays = append(tmpNumWays, bytArrCpy)
-				} else {
-					if inDigit == 0 {
-						continue
-					}
-				}
-
-				if inDigit != 0 {
-					tmpNumWays = append(tmpNumWays, append(bytArr, inDigit))
-				}
-			}
-
-			if len(tmpNumWays) == 0 {
-				return 0
-			}
-
-			numWays = tmpNumWays
+	for _, byt := range sbyt {
+		if byt-'0' == 0 {
+			count--
 		}
-
 	}
 
-	return len(numWays)
+	return count + decoder(sbyt, make(map[string]int, len(s)))
 }
