@@ -24,6 +24,7 @@ func decoder(s []byte, memo map[string]int) int {
 	}
 
 	var count int
+  currentIncrement := 1
 
 	for i := 0; i < len(s)-1; i++ {
 		inDigit := s[i] - '0'
@@ -32,8 +33,11 @@ func decoder(s []byte, memo map[string]int) int {
 			return 0
 		}
 
+    if inDigit == 0 {
+      currentIncrement--
+    }
+    
 		nDigit := s[i+1] - '0'
-
 		fmted := fmt.Sprintf("%d%d", inDigit, nDigit)
 		toDigit, _ := strconv.Atoi(fmted)
 
@@ -42,15 +46,15 @@ func decoder(s []byte, memo map[string]int) int {
 			nArray := make([]byte, 0, len(s)-1)
 			nArray = append(nArray, s[:i]...)
 			nArray = append(nArray, byte(toDigit))
-			count += decoder(append(nArray, s[i+2:]...), memo) + 1
+			count += decoder(append(nArray, s[i+2:]...), memo)
 		case toDigit > 26 && inDigit == 0:
 			return 0
 		}
 	}
 
-	memo[key] = count
+	memo[key] = count+currentIncrement
 
-	return count
+	return count+currentIncrement
 
 }
 
@@ -60,15 +64,5 @@ func NumDecodings(s string) (ret int) {
 		return 0
 	}
 
-	count := 1
-
-	sbyt := []byte(s)
-
-	for _, byt := range sbyt {
-		if byt-'0' == 0 {
-			count--
-		}
-	}
-
-	return count + decoder(sbyt, make(map[string]int, len(s)))
+	return decoder([]byte(s), make(map[string]int, len(s)))
 }
