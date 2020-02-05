@@ -22,5 +22,29 @@
   "test6": {
     "input": "56",
     "output": 1
+  },
+  "test7": {
+    "input": "11111",
+    "output": 8
+  },
+  "test8": {
+    "input": "226",
+    "output": 3
+  },
+  "test9": {
+    "input": "1112211223344",
+    "output": 89
+  },
+  "test10": {
+    "input": "11120211223344",
+    "output": 39
+  },
+  "test11": {
+    "input": "01112211223344",
+    "output": 0
+  },
+  "test12": {
+    "input": "11122112233440",
+    "output": 0
   }
 }
