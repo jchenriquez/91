@@ -1,0 +1,26 @@
+{
+  "test1":{
+    "input": "11",
+    "output": 2
+  },
+  "test2": {
+    "input": "12",
+    "output": 2
+  },
+  "test3": {
+    "input": "",
+    "output": 0
+  },
+  "test4": {
+    "input": "112",
+    "output": 3
+  },
+  "test5": {
+    "input": "1112",
+    "output": 5
+  },
+  "test6": {
+    "input": "56",
+    "output": 1
+  }
+}
